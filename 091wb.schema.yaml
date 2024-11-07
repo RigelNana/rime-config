@@ -1,0 +1,192 @@
+# Rime schema settings
+# encoding: utf-8
+
+schema:
+  schema_id: 091wb
+  name: 091五笔
+  version: "1"
+  dependencies:
+    - 091dz
+
+punctuator:
+  full_shape:
+    ' ' : { commit: '　' }
+    ',' : { commit: ， }
+    '.' : { commit: 。 }
+    '<' : [ 《, 〈, «, ‹ ]
+    '>' : [ 》, 〉, », › ]
+    '/' : [ ／, ÷ ]
+    '?' : { commit: ？ }
+    ';' : { commit: ； }
+    ':' : { commit: ： }
+    '''' : { pair: [ '‘', '’' ] }
+    '"' : { pair: [ '“', '”' ] }
+    '\' : [ 、, ＼ ]
+    '|' : [ ·, ｜, '§', '¦' ]
+    '`' : ｀
+    '~' : ～
+    '!' : { commit: ！ }
+    '@' : [ ＠, ☯ ]
+    '#' : [ ＃, ⌘ ]
+    '%' : [ ％, '°', '℃' ]
+    '$' : [ ￥, '$', '€', '£', '¥', '¢', '¤' ]
+    '^' : { commit: …… }
+    '&' : ＆
+    '*' : [ ＊, ·, ・, ×, ※, ❂ ]
+    '(' : （
+    ')' : ）
+    '-' : －
+    '_' : ——
+    '+' : ＋
+    '=' : ＝
+    '[' : [ 「, 【, 〔, ［ ]
+    ']' : [ 」, 】, 〕, ］ ]
+    '{' : [ 『, 〖, ｛ ]
+    '}' : [ 』, 〗, ｝ ]
+  half_shape:
+    ',' : { commit: ， }
+    '.' : { commit: 。 }
+    '<' : [ 《, 〈, «, ‹ ]
+    '>' : [ 》, 〉, », › ]
+    '/' : { commit: 、 }
+    '?' : { commit: ？ }
+    ';' : { commit: ； }
+    ':' : { commit: ： }
+    '''' : { pair: [ '‘', '’' ] }
+    '"' : { pair: [ '“', '”' ] }
+    '\' : [ 、, '\', ＼ ]
+    '|' : [ ·, '|', ｜, '§', '¦' ]
+    '`' : '`'
+    '~' : [ '~', ～ ]
+    '!' : { commit: ！ }
+    '@' : '@'
+    '#' : '#'
+    '%' : { commit: '%' }
+    '$' : [ ￥, '$', '€', '£', '¥', '¢', '¤' ]
+    '^' : { commit: …… }
+    '&' : '&'
+    '*' : { commit: '*' }
+    '(' : （
+    ')' : ）
+    '-' : '-'
+    '_' : ——
+    '+' : '+'
+    '=' : '='
+    '[' : [ 「, 【, 〔, ［ ]
+    ']' : [ 」, 】, 〕,  ］ ]
+    '{' : [ 『, 〖, ｛ ]
+    '}' : [ 』, 〗, ｝ ]
+
+switches: # 可在状态栏上显示的内容，去掉下面的"#"号可开启
+  - options: [ _keyboard_menu, _keyboard_menu]
+    states: [ "　❖", "　❖"]
+  - name: ascii_mode
+    states: [ CN, EN ]
+    reset: 0
+  - options: [ _keyboard_default, _keyboard_defaultVJ]
+    states: [ "　　　　　　　　　", "　　　　　　　　　"]
+  - options: [ _key_Hide, _key_Hide]
+    states: [ ﹀, ﹀]
+  - options: [ _key_LLQ, _key_LLQ]
+    #states: [ 🔍, 🔍]
+  - options: [ _key_VOICE_ASSIST, _key_VOICE_ASSIST]
+   # states: [ 🎤, 🎤]
+  - name: zh_simp
+   # states: [ Ⓙ, Ⓕ ]
+   # reset: 0
+  - name: _hide_key_hint
+    #states: [ ≑, ≟ ]
+  - name: _hide_candidate
+   # states: [ ☐, ☒ ]
+    reset: 0
+  - name: _hide_comment
+  #  states: [ 提示, 无]
+
+engine:
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - table_translator@custom_phrase
+    - table_translator
+    - reverse_lookup_translator
+  filters:
+    - simplifier
+    - simplifier@zh_simp
+    - uniquifier
+
+speller:
+  alphabet: 'zyxwvutsrqponmlkjihgfedcba'
+  initials: 'abcdefghijklmnopqrstuvwxyz'
+  delimiter: " '"
+  max_code_length: 4
+  auto_select: true   #顶字上屏
+  auto_select_pattern: ^;.$|^\w{4}$
+  auto_clear: max_length #manual|auto|max_length 空码按下一键确认清屏|空码自动清|达到最长码时后码顶上清屏
+
+translator:
+  dictionary: 091wb
+  enable_charset_filter: false
+  enable_sentence: false
+  enable_completion: false # 编码提示开关
+  enable_user_dict: false
+  disable_user_dict_for_patterns:
+    - "^z.*$"
+ 
+zh_simp:
+  opencc_config: s2tw.json
+  option_name: zh_simp
+  
+custom_phrase:
+  dictionary: ""
+  user_dict: 091wb_user
+  db_class: stabledb
+  enable_sentence: false
+  enable_completion: false
+
+reverse_lookup:
+  dictionary: hedz
+  comment_format:
+    - xform/^/〔/
+    - xform/$/〕/
+    - xform/ /, /
+
+
+key_binder:
+  import_preset: default #方案切换相关
+  bindings:
+    - {accept: bracketleft, send: Page_Up, when: has_menu} # [上翻页
+    - {accept: bracketright, send: Page_Down, when: has_menu} # ]下翻页
+    - {accept: period, send: 2, when: has_menu}
+    - {accept: comma, send: 2, when: has_menu}
+    - {accept: Release+period, send: period, when: has_menu}
+    - {accept: Release+comma, send: comma, when: has_menu}
+    - {accept: "Tab", send: ;, when: composing}
+   
+recognizer:
+  import_preset: default
+  patterns:
+    #uppercase: "[A-Z][-_+.'0-9A-Za-z]*$"
+    uppercase: "" #中文状态大写锁定直接上屏
+    reverse_lookup: "[a-z`]*`+[a-z`]*"
+    punct: ""
+
+menu:
+  page_size: 5 #候选项数
+  
+style:
+  horizontal: false #竖排为false
+  
